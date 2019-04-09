@@ -27,6 +27,7 @@ function createWindow() {
     const openWindow = function() {
         window = new BrowserWindow({
             title: 'Kraken Launcher',
+            icon: __dirname + "/assets/icon.ico",
             width: 1000,
             height: 700
         });
