@@ -10,5 +10,5 @@ out/
 *.iml
 *.ipr
 *.iws
-src/main/java/nerdhub/kraken/electron/KrakenLauncher
+src/main/electron/KrakenLauncher
 node_modules/
