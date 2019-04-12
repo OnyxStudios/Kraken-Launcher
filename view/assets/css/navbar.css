@@ -1,0 +1,43 @@
+:root {
+    --navbarColor: #2b3e50;
+    --activeBtnColor: #577b9e;
+    --hoverBtnColor: #37587a;
+}
+
+ul {
+    background-color: var(--navbarColor);
+    list-style-type: none;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    position: fixed;
+    -webkit-app-region: drag;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    vertical-align: middle;
+}
+
+li a:hover:not(.active) {
+    background-color: var(--hoverBtnColor);
+}
+
+.active {
+    background-color: var(--activeBtnColor);
+}
+
+.logo {
+    position: relative;
+    padding: 0px 10px 0px 10px;
+    top: 5px;
+}

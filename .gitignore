@@ -1,14 +1,7 @@
-# gradle
-
-.gradle/
-build/
-out/
-
 # idea
 
 .idea/
 *.iml
 *.ipr
 *.iws
-src/main/electron/KrakenLauncher
 node_modules/
