@@ -1,4 +1,5 @@
 const {app, BrowserWindow} = new require('electron');
+const config = require('./utils/config');
 
 let window;
 
