@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Kraken Launcher</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/settings.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/footer.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <div id="navbar" class="navbar">
+            <ul>
+                <li class="logo"><img src="assets/images/logo.png" width="46" height="46"></li>
+                <li v-bind:class="{ active: isHome }" onclick="return switchTab('home');"><span><i class="material-icons">dashboard</i> Home</span></li>
+                <li v-bind:class="{ active: isInstances }" onclick="return switchTab('instances');"><span><i class="material-icons">list</i> Instances</span></li>
+                <li v-bind:class="{ active: isModpacks }" onclick="return switchTab('modpacks');"><span><i class="material-icons">archive</i> Modpacks</span></li>
+            </ul>
+        </div>
+
+        <div id="content" class="content">
+            <center>
+                <div v-if="home">
+                    Hello World!!!<br>
+                    Node Version <script>document.write(process.versions.node)</script><br>
+                    Electron Version <script>document.write(process.versions.electron)</script>
+                </div>
+
+                <div v-if="instances">
+                    Instances stuff!!!!
+                </div>
+
+                <div v-if="modpacks">
+                    Modpacks stuff!!!
+                </div>
+
+                <div id="settings-window">
+                    <div class="settings-content">
+                        <span class="close" onclick="return closeSettings();">&times;</span>
+                        Settings placeholder for KrakenLauncher<br>
+                        Actual settings will be coming soon plox
+                    </div>
+                </div>
+            </center>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <div class="left">
+                    <p class="mc-text">Minecraft: <span class="mc-acc">TestMCUser</span></p>
+                </div>
+
+                <div class="right">
+                    <p><a class="settings-text" id="open-window" href="#" onclick="return openSettings();">Settings <i class="material-icons">settings</i></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../src/main.js"></script>
+    <script src="../src/utils/settings.js"></script>
+</body>
+</html>

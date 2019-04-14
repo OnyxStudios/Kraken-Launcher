@@ -1,7 +1,7 @@
 :root {
-    --navbarColor: #2b3e50;
-    --activeBtnColor: #577b9e;
-    --hoverBtnColor: #37587a;
+    --navbarColor: #002547;
+    --activeBtnColor: #1d4e7c;
+    --hoverBtnColor: #0f3760;
 }
 
 ul {
@@ -19,7 +19,7 @@ li {
     float: left;
 }
 
-li a {
+li span {
     display: block;
     color: white;
     text-align: center;
@@ -28,7 +28,11 @@ li a {
     vertical-align: middle;
 }
 
-li a:hover:not(.active) {
+li span:hover {
+    cursor: pointer;
+}
+
+li span:hover:not(.active) {
     background-color: var(--hoverBtnColor);
 }
 

@@ -1,0 +1,45 @@
+:root {
+    --settingsBGColor: #154672;
+}
+
+.settings-text {
+    padding: 0px 10px 0px 10px;
+    font-size: 18px;
+    text-decoration: none;
+    color: white;
+}
+
+#settings-window {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: transparent;
+}
+
+.settings-content {
+    background-color: var(--settingsBGColor);
+    margin: 10% auto;
+    padding: 20px;
+    width: 80%;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+}
+
+.close {
+    color: white;
+    float: right;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: slategray;
+    text-decoration: none;
+    cursor: pointer;
+}

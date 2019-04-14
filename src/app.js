@@ -5,14 +5,14 @@ let window;
 function createWindow() {
     window = new BrowserWindow({
         title: 'Kraken Launcher',
-        icon: 'view/assets/images/favicon.ico',
+        icon: 'public/assets/images/favicon.ico',
         width: 950,
         height: 700
     });
 
     window.setResizable(false);
-    window.setMenu(null);
-    window.loadFile('view/index.html');
+    //window.setMenu(null);
+    window.loadFile('public/index.html');
 
     window.on('closed', () => {
        window = null;
