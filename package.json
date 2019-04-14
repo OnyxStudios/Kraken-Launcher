@@ -1,13 +1,18 @@
 {
   "name": "KrakenLauncher",
+  "productName": "Kraken Launcher",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/app.js",
+  "description": "A launcher for minecraft modpacks, mods, and other stuff",
+  "main": "./src/app.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=public/assets/images/icons/logo.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . KrakenLauncher --overwrite --asar=true --platform=win32 --arch=ia32 --icon=public/assets/images/icons/logo.ico --prune=true --out=release-builds --version-string.CompanyName=NH --version-string.FileDescription=NH --version-string.ProductName=\"Kraken Launcher\"",
+    "package-linux": "electron-packager . KrakenLauncher --overwrite --asar=true --platform=linux --arch=x64 --icon=public/assets/images/icons/logo.png --prune=true --out=release-builds"
   },
   "dependencies": {},
   "devDependencies": {
-    "electron": "^5.0.0-beta.8"
+    "electron": "^5.0.0-beta.8",
+    "electron-packager": "^13.1.1"
   }
 }
