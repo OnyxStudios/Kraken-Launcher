@@ -4,6 +4,10 @@
     --scrollbarBarColor: #37587a;
 }
 
+* {
+    user-select: none;
+}
+
 body {
     background-color: var(--bgColor);
     width: 100%;

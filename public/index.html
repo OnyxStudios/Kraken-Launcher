@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Kraken Launcher</title>
@@ -8,7 +9,6 @@
     <link rel="stylesheet" type="text/css" href="assets/css/footer.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
-
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 
@@ -24,27 +24,25 @@
         </div>
 
         <div id="content" class="content">
-                <div v-if="home">
-                    Hello World!!!<br>
-                    Node Version <script>document.write(process.versions.node)</script><br>
-                    Electron Version <script>document.write(process.versions.electron)</script>
-                </div>
+            <div v-if="home">
+                Hello World!
+                <br> This program runs on NodeJS and Electron
+            </div>
 
-                <div v-if="instances">
-                    Instances stuff!!!!
-                </div>
+            <div v-if="instances">
+                Instances stuff!!!!
+            </div>
 
-                <div v-if="modpacks">
-                    Modpacks stuff!!!
-                </div>
+            <div v-if="modpacks">
+                Modpacks stuff!!!
+            </div>
 
-                <div id="settings-window">
-                    <div class="settings-content">
-                        <span class="close" onclick="return closeSettings();">&times;</span>
-                        Settings placeholder for KrakenLauncher<br>
-                        Actual settings will be coming soon plox
-                    </div>
+            <div id="settings-window">
+                <div class="settings-content">
+                    <span class="close" onclick="return closeSettings();">&times;</span> Settings placeholder for KrakenLauncher<br>
+                    Actual settings will be coming soon plox
                 </div>
+            </div>
         </div>
 
         <div class="footer">
@@ -64,3 +62,4 @@
     <script src="../src/utils/settings.js"></script>
 </body>
 </html>
+
