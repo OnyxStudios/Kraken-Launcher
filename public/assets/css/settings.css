@@ -13,9 +13,9 @@
     display: none;
     position: fixed;
     z-index: 1;
-    left: 0;
+    left: 14%;
     top: 0;
-    width: 100%;
+    width: 86%;
     height: 100%;
     overflow: auto;
     background-color: transparent;
@@ -25,7 +25,7 @@
     background-color: var(--settingsBGColor);
     margin: 10% auto;
     padding: 20px;
-    width: 80%;
+    width: 66%;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;

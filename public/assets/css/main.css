@@ -18,12 +18,15 @@ body {
 }
 
 .content {
-    width: 100%;
-    top: 53px;
-    bottom: 43px;
+    width: 86%;
+    height: 100%;
+    top: 0;
+    left: 14%;
+    bottom: 41px;
+    text-align: center;
+    display: inline-block;
     overflow: scroll;
     position: fixed;
-    text-align: center;
 }
 
 .content::-webkit-scrollbar {

@@ -5,24 +5,20 @@
 }
 
 ul {
+    height: 100%;
+    width: auto;
     background-color: var(--navbarColor);
     list-style-type: none;
-    overflow: hidden;
     margin: 0;
     padding: 0;
-    width: 100%;
+    overflow: hidden;
     position: fixed;
-    -webkit-app-region: drag;
-}
-
-li {
-    float: left;
+    display: block;
 }
 
 li span {
     display: block;
     color: white;
-    text-align: center;
     padding: 14px 16px;
     text-decoration: none;
     vertical-align: middle;
@@ -42,6 +38,7 @@ li span:hover:not(.active) {
 
 .logo {
     position: relative;
-    padding: 0px 10px 0px 10px;
-    top: 5px;
+    padding: 0px 10px 10px 10px;
+    top: 10px;
+    text-align: center;
 }
