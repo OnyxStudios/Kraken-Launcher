@@ -1,50 +1,182 @@
-:root {
-    --bgColor: #072c51;
-    --scrollbarBGColor: #1c3e5e;
-    --scrollbarBarColor: #37587a;
-}
-
-* {
-    user-select: none;
-}
-
 body {
-    background-color: var(--bgColor);
-    width: 100%;
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
+    padding: 0;
     margin: 0;
-    font-family: 'Lato', sans-serif;
+    overflow: hidden;
+    user-select: none;
+    font-family: 'Arial', sans-serif;
     color: white;
 }
 
-.content {
-    width: 86%;
+#root {
     height: 100%;
-    top: 0;
-    left: 14%;
-    bottom: 41px;
-    text-align: center;
-    display: inline-block;
-    overflow: scroll;
-    position: fixed;
+    width: 100%;
 }
 
-.content::-webkit-scrollbar {
+.active {
+    color: white !important;
+}
+
+.instanceItem:hover {
+    cursor: pointer;
+}
+
+::-webkit-scrollbar {
     width: 6px;
-    background-color: var(--scrollbarBGColor);
 }
 
-.content::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbarBarColor);
-}
-
-.content::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    background-color: var(--scrollbarBGColor);
 }
 
-.material-icons {
-    vertical-align: middle;
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(31, 35, 45, 0.9);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(31, 35, 45, 0.4);
+}
+      
+.loader {
+  height: 100px;
+  width: 100px;
+  border: 6px solid transparent;
+  border-top-color: #047A9E;
+  border-bottom-color: #047A9E;
+  border-radius: 50%;
+  animation: spin 3s linear infinite;
+}
+
+.loader::before{
+  content: "";
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+  border: 6px solid transparent;
+  border-top-color: #3DB4F2;
+  border-bottom-color: #3DB4F2;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    from {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    from {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+}
+
+/*
+Mods styles
+ */
+.modsTable tr:nth-child(odd) {
+    background-color: transparent;
+}
+
+.modsTable tr:nth-child(even) {
+    background-color: rgba(39, 44, 50, 0.8);
+}
+
+.modsTable th:first-child,
+.modsTable td:first-child {
+    padding-left: 10px;
+}
+
+.modsTable td,
+.modsTable th {
+    padding: 8px 8px;
+    display: table-cell;
+    text-align: left;
+    vertical-align: top;
+}
+
+.modsTable th {
+    font-weight: bold;
+}
+
+.modsTable {
+    font-size: 13px !important;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    display: table;
+}
+
+.modStatusBox {
     position: relative;
-    top: -1px;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.modStatusBox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+.modStatusBox:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+.modStatusBox input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.modStatusBox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.modStatusBox .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
 }

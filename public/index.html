@@ -1,65 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Kraken Launcher</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/main.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/navbar.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/settings.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/footer.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/assets/images/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta
+    name="Kraken Launcher"
+    content="An advanced minecraft launcher for forge and fabric"
+  />
+  <link rel="apple-touch-icon" href="logo192.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <title>Kraken Launcher</title>
 </head>
-
 <body>
-    <div class="main">
-        <nav id="navbar" class="navbar">
-            <ul>
-                <li class="logo"><img src="assets/images/logo.png" width="46" height="46"></li>
-                <li v-bind:class="{ active: isHome }" onclick="return switchTab('home');"><span><i class="material-icons">dashboard</i> Home</span></li>
-                <li v-bind:class="{ active: isInstances }" onclick="return switchTab('instances');"><span><i class="material-icons">list</i> Instances</span></li>
-                <li v-bind:class="{ active: isModpacks }" onclick="return switchTab('modpacks');"><span><i class="material-icons">archive</i> Modpacks</span></li>
-            </ul>
-        </nav>
+  <div id="root"></div>
+  
+  <script>
+    const customTitlebar = require('custom-electron-titlebar');
+    const isDev = require('electron-is-dev');
 
-        <div id="content" class="content">
-            <div v-if="home">
-                Hello World!
-                <br> This program runs on NodeJS and Electron
-            </div>
+    let TitleBar = new customTitlebar.Titlebar({
+      backgroundColor: customTitlebar.Color.fromHex('#272C38'),
+      titleHorizontalAlignment: 'left',
+      icon: 'assets/images/logo.png'
+    });
 
-            <div v-if="instances">
-                Instances stuff!!!!
-            </div>
-
-            <div v-if="modpacks">
-                Modpacks stuff!!!
-            </div>
-
-            <div id="settings-window">
-                <div class="settings-content">
-                    <span class="close" onclick="return closeSettings();">&times;</span> Settings placeholder for KrakenLauncher<br>
-                    Actual settings will be coming soon plox
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-content">
-                <div class="left">
-                    <p class="mc-text">Minecraft: <span class="mc-acc">TestMCUser</span></p>
-                </div>
-
-                <div class="right">
-                    <p><a class="settings-text" id="open-window" href="#" onclick="return openSettings();">Settings <i class="material-icons">settings</i></a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="../src/maindisplay.js"></script>
-    <script src="../src/utils/settings.js"></script>
+    if(!isDev) {
+      TitleBar.updateMenu(null);
+    }
+  </script>
 </body>
 </html>
-

@@ -4,5 +4,6 @@
 *.iml
 *.ipr
 *.iws
-node_modules/
+node_modules/*
+!node_modules/react-scripts/
 release-builds/
