@@ -22,6 +22,14 @@ body {
     cursor: pointer;
 }
 
+.instancesSearch::placeholder {
+    color: white;
+}
+
+.instancesSearch:focus {
+    outline: none;
+}
+
 ::-webkit-scrollbar {
     width: 6px;
 }

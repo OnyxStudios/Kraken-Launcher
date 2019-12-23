@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const shell = require('electron').remote.shell;
 const StorageUtils = require('./../utils/StorageUtils');
 const instancesFolder = require('electron').remote.app.getPath('userData') + '/instances/';
@@ -69,12 +70,40 @@ function instanceToObj(instance) {
     });
 }
 
-function openInstanceFolder(instanceID) {
-    shell.openItem(instancesFolder + instanceID);
+function openInstanceFolder(instance) {
+    shell.openItem(instancesFolder + instance.id);
+}
+
+function deleteInstance(instance) {
+    let instances = StorageUtils.getOrDefault('instances', []);
+    let index = instances.indexOf(instance.id);
+    if(~index) {
+        instances.splice(index, 1);
+    }
+
+    if(fs.existsSync(instancesFolder + instance.id)) {
+        deleteFolder(instancesFolder + instance.id);
+    }
+    StorageUtils.storeData('instances', instances);
+}
+
+function deleteFolder(folderPath) {
+    if (fs.existsSync(folderPath)) {
+        fs.readdirSync(folderPath).forEach((file, index) => {
+            const curPath = path.join(folderPath, file);
+            if (fs.lstatSync(curPath).isDirectory()) {
+                deleteFolder(curPath);
+            } else {
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(folderPath);
+    }
 }
 
 module.exports = {
     parseInstances,
     toggleMod,
-    openInstanceFolder
+    openInstanceFolder,
+    deleteInstance
 };

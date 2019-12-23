@@ -18,7 +18,8 @@ class InstancesScreen extends React.Component {
         contextVisible: false,
         mouseX: 0,
         mouseY: 0,
-        instanceID: -1
+        selectedInstance: null,
+        searchText: ''
     };
 
     componentWillMount() {
@@ -40,13 +41,13 @@ class InstancesScreen extends React.Component {
 
     handleClick = (event) => {
         if(!event.target.id || event.target.id.indexOf('context') <= -1) {
-            this.setState({contextVisible: false, instanceID: -1});
+            this.setState({contextVisible: false, selectedInstance: null});
         }
     };
 
-    openContext = (event, id) => {
+    openContext = (event, instance) => {
         event.preventDefault();
-        this.setState({contextVisible: true, mouseX: event.clientX, mouseY: event.clientY - 30, instanceID: id});
+        this.setState({contextVisible: true, mouseX: event.clientX, mouseY: event.clientY - 30, selectedInstance: instance});
     };
 
     openInstance = (instance) => {
@@ -70,13 +71,25 @@ class InstancesScreen extends React.Component {
         this.setState({instances: currentInstances, instance: newInstance});
     };
 
+    deletePack = () => {
+        let tempInstances = this.state.instances;
+        let index = tempInstances.indexOf(this.state.selectedInstance);
+        if(~index) {
+            tempInstances.splice(index, 1);
+        }
+
+        this.props.removePack(this.state.selectedInstance);
+        this.setState({instances: tempInstances});
+        ModpackUtils.deleteInstance(this.state.selectedInstance);
+    };
+
     ContextMenu = () => {
         return(
             <div id='context' key='context' style={[GlobalStyles.contextMenu, {left: this.state.mouseX, top: this.state.mouseY}]}>
-                <button key='context_play' style={GlobalStyles.contextItem}>Play</button>
-                <button key='context_openfolder' style={GlobalStyles.contextItem} onClick={() => ModpackUtils.openInstanceFolder(this.state.instanceID)}>Open folder</button>
+                <button key='context_play' style={[GlobalStyles.contextItem, {color: 'lightgreen'}]}>Play</button>
+                <button key='context_openfolder' style={GlobalStyles.contextItem} onClick={() => ModpackUtils.openInstanceFolder(this.state.selectedInstance)}>Open folder</button>
                 <hr/>
-                <button key='context_delete' style={[GlobalStyles.contextItem, {color: 'red'}]}>Delete</button>
+                <button key='context_delete' style={[GlobalStyles.contextItem, {color: 'red'}]} onClick={this.deletePack}>Delete</button>
             </div>
         );
     };
@@ -95,13 +108,27 @@ class InstancesScreen extends React.Component {
 
     InstanceItem = (instance) => {
         let selected = this.state.instance && this.state.instance.id == instance.id;
+
         return (
-            <div key={instance.id} className='instanceItem' style={selected ? InstancesStyles.selectedStyle : InstancesStyles.instanceItem} onContextMenu={(event) => this.openContext(event, instance.id)} onClick={() => this.openInstance(instance)}>
+            <div key={instance.id} className='instanceItem' style={selected ? InstancesStyles.selectedStyle : InstancesStyles.instanceItem} onClick={() => this.openInstance(instance)}>
                 <center>
-                    <img style={selected ? InstancesStyles.selectedLogo : InstancesStyles.instanceListLogo} src={instance.logo} alt='' />
+                    <img onContextMenu={(event) => this.openContext(event, instance)} style={selected ? InstancesStyles.selectedLogo : InstancesStyles.instanceListLogo} src={instance.logo} alt='' />
                     <p>{instance.name}</p>
                 </center>
             </div>
+        );
+    };
+
+    SearchItems = () => {
+        let filteredList = [];
+        this.state.instances.forEach(instance => {
+            if(instance.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1) {
+                filteredList.push(instance);
+            }
+        });
+
+        return (
+            filteredList.map(this.InstanceItem)
         );
     };
 
@@ -117,13 +144,13 @@ class InstancesScreen extends React.Component {
 
                                 <div style={InstancesStyles.options}>
                                     <button onClick={() => console.log("Clicked Play!")} key='play' style={[InstancesStyles.optionsBtn, {float: 'left', backgroundColor: '#3DB4F2'}]}>Play</button>
-                                    <button onClick={() => console.log("Clicked Delete!")} key='delete' style={[InstancesStyles.optionsBtn, {float: 'right', backgroundColor: '#E85D75'}]}>Delete</button>
+                                    <button onClick={this.deletePack} key='delete' style={[InstancesStyles.optionsBtn, {float: 'right', backgroundColor: '#E85D75'}]}>Delete</button>
                                 </div>
                             </div>
 
                             <div style={InstancesStyles.logoWrapper}>
                                 <img src={this.state.instance.logo} style={InstancesStyles.instanceLogo} alt='' />
-                                <p>{this.state.instance.author}<br/> V{this.state.instance.version}</p>
+                                <p>{this.state.instance.author}<br/>V{this.state.instance.version}</p>
                             </div>
                         </div>
 
@@ -182,8 +209,10 @@ class InstancesScreen extends React.Component {
                 {this.state.createInstance ? this.CreateInstance() : null}
 
                 <div style={InstancesStyles.instances}>
-                    {this.state.instances.map(this.InstanceItem)}
                     <center>
+                        <input className='instancesSearch' type='text' placeholder='Search' style={InstancesStyles.searchBar} value={this.state.searchText} onChange={(event) => this.setState({searchText: event.target.value})} />
+
+                        {!this.state.searchText.trim() ? this.state.instances.map(this.InstanceItem) : this.SearchItems()}
                         <div key={0} className='instanceItem' style={[InstancesStyles.instanceItem, InstancesStyles.createInstanceItem, {width: 120}]} onClick={() => this.openInstance({id: 0})}>
                             <p>
                                 <i className='material-icons'>add_circle_outline</i>

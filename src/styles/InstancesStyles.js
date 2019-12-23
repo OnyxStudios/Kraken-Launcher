@@ -122,6 +122,15 @@ let InstancesStyles = {
         backgroundColor: 'rgba(39, 44, 50, 0.8)',
         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.6)',
         overflowY: 'scroll',
+    },
+    searchBar: {
+        backgroundColor: '#272C32',
+        color: 'white',
+        border: 'none',
+        width: '80%',
+        marginTop: 10,
+        fontSize: 16,
+        padding: 6
     }
 };
 
