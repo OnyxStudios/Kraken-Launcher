@@ -23,7 +23,6 @@ class InstancesScreen extends React.Component {
     };
 
     componentWillMount() {
-        this.setState({loaded: false});
         let tempInstances = ModpackUtils.parseInstances();
 
         tempInstances.forEach(instance => this.props.addPack(instance));
@@ -40,7 +39,9 @@ class InstancesScreen extends React.Component {
     }
 
     handleClick = (event) => {
-        if(!event.target.id || event.target.id.indexOf('context') <= -1) {
+        const {contextVisible} = this.state;
+
+        if(contextVisible && (!event.target.id || event.target.id.indexOf('context') <= -1)) {
             this.setState({contextVisible: false, selectedInstance: null});
         }
     };
@@ -51,43 +52,43 @@ class InstancesScreen extends React.Component {
     };
 
     openInstance = (instance) => {
-        if(instance.id == 0) {
-            this.setState({createInstance: true});
-        }else {
-            this.setState({instance});
-        }
+        this.setState(instance.id === 0 ? {createInstance: true} : {instance})
     };
 
     modifyInstanceMod = (modname) => {
-        this.props.removePack(this.state.instance);
-        let currentInstances = this.state.instances;
-        let index = currentInstances.indexOf(this.state.instance);
-        let newInstance = ModpackUtils.toggleMod(this.state.instance.id, modname);
+        let {instance, instances} = this.state;
+
+        this.props.removePack(instance);
+        let index = instances.indexOf(instance);
+        let newInstance = ModpackUtils.toggleMod(instance.id, modname);
         if(~index) {
-            currentInstances[index] = newInstance;
+            instances[index] = newInstance;
         }
 
         this.props.addPack(newInstance);
-        this.setState({instances: currentInstances, instance: newInstance});
+        this.setState({instances, instance: newInstance});
     };
 
     deletePack = () => {
-        let tempInstances = this.state.instances;
-        let index = tempInstances.indexOf(this.state.selectedInstance);
+        let {instances, selectedInstance} = this.state;
+
+        let index = instances.indexOf(selectedInstance);
         if(~index) {
-            tempInstances.splice(index, 1);
+            instances.splice(index, 1);
         }
 
-        this.props.removePack(this.state.selectedInstance);
-        this.setState({instances: tempInstances});
-        ModpackUtils.deleteInstance(this.state.selectedInstance);
+        this.props.removePack(selectedInstance);
+        this.setState({instances: instances});
+        ModpackUtils.deleteInstance(selectedInstance);
     };
 
     ContextMenu = () => {
+        let {mouseX, mouseY, selectedInstance} = this.state;
+
         return(
-            <div id='context' key='context' style={[GlobalStyles.contextMenu, {left: this.state.mouseX, top: this.state.mouseY}]}>
+            <div id='context' key='context' style={[GlobalStyles.contextMenu, {left: mouseX, top: mouseY}]}>
                 <button key='context_play' style={[GlobalStyles.contextItem, {color: 'lightgreen'}]}>Play</button>
-                <button key='context_openfolder' style={GlobalStyles.contextItem} onClick={() => ModpackUtils.openInstanceFolder(this.state.selectedInstance)}>Open folder</button>
+                <button key='context_openfolder' style={GlobalStyles.contextItem} onClick={() => ModpackUtils.openInstanceFolder(selectedInstance)}>Open folder</button>
                 <hr/>
                 <button key='context_delete' style={[GlobalStyles.contextItem, {color: 'red'}]} onClick={this.deletePack}>Delete</button>
             </div>
@@ -120,9 +121,11 @@ class InstancesScreen extends React.Component {
     };
 
     SearchItems = () => {
+        let {instances, searchText} = this.state;
         let filteredList = [];
-        this.state.instances.forEach(instance => {
-            if(instance.name.toLowerCase().indexOf(this.state.searchText.toLowerCase()) > -1) {
+
+        instances.forEach(instance => {
+            if(instance.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
                 filteredList.push(instance);
             }
         });
@@ -133,14 +136,16 @@ class InstancesScreen extends React.Component {
     };
 
     InstanceContent = () => {
-        if(this.state.instance) {
+        let {instance} = this.state;
+
+        if(instance) {
             return (
                 <div style={InstancesStyles.instancePage}>
                     <center style={{width: '100%', height: '100%'}}>
                         <div style={InstancesStyles.instanceHeaderWrapper}>
                             <div style={InstancesStyles.instanceDesc}>
-                                <p style={InstancesStyles.title}>{this.state.instance.name}</p>
-                                <p style={InstancesStyles.description}>{this.state.instance.description ? this.state.instance.description : ''}</p>
+                                <p style={InstancesStyles.title}>{instance.name}</p>
+                                <p style={InstancesStyles.description}>{instance.description ? instance.description : ''}</p>
 
                                 <div style={InstancesStyles.options}>
                                     <button onClick={() => console.log("Clicked Play!")} key='play' style={[InstancesStyles.optionsBtn, {float: 'left', backgroundColor: '#3DB4F2'}]}>Play</button>
@@ -149,8 +154,8 @@ class InstancesScreen extends React.Component {
                             </div>
 
                             <div style={InstancesStyles.logoWrapper}>
-                                <img src={this.state.instance.logo} style={InstancesStyles.instanceLogo} alt='' />
-                                <p>{this.state.instance.author}<br/>V{this.state.instance.version}</p>
+                                <img src={instance.logo} style={InstancesStyles.instanceLogo} alt='' />
+                                <p>{instance.author}<br/>V{instance.version}</p>
                             </div>
                         </div>
 
@@ -162,14 +167,13 @@ class InstancesScreen extends React.Component {
                                         <th>Author</th>
                                         <th>File</th>
                                         <th>Enabled</th>
-                                        <th></th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     {
-                                        this.state.instance.mods.size <= 0 ? null :
-                                            this.state.instance.mods.map(mod => {
+                                        instance.mods.size <= 0 ? null :
+                                            instance.mods.map(mod => {
                                                 return (
                                                     <tr key={mod.name}>
                                                         <td>{mod.name}</td>
@@ -195,7 +199,9 @@ class InstancesScreen extends React.Component {
     };
 
     render() {
-        if(!this.state.loaded) {
+        let {loaded, contextVisible, createInstance, instances, searchText} = this.state;
+
+        if(!loaded) {
             return (
                 <div style={[NavStyles.content, {display: 'flex', justifyContent: 'center', alignItems: 'center'}]}>
                     <div className="loader"></div>
@@ -205,14 +211,14 @@ class InstancesScreen extends React.Component {
 
         return(
             <div style={[NavStyles.content, InstancesStyles.instancesPage]}>
-                {this.state.contextVisible ? this.ContextMenu() : null}
-                {this.state.createInstance ? this.CreateInstance() : null}
+                {contextVisible ? this.ContextMenu() : null}
+                {createInstance ? this.CreateInstance() : null}
 
                 <div style={InstancesStyles.instances}>
                     <center>
-                        <input className='instancesSearch' type='text' placeholder='Search' style={InstancesStyles.searchBar} value={this.state.searchText} onChange={(event) => this.setState({searchText: event.target.value})} />
+                        <input className='instancesSearch' type='text' placeholder='Search' style={InstancesStyles.searchBar} value={searchText} onChange={(event) => this.setState({searchText: event.target.value})} />
 
-                        {!this.state.searchText.trim() ? this.state.instances.map(this.InstanceItem) : this.SearchItems()}
+                        {!searchText.trim() ? instances.map(this.InstanceItem) : this.SearchItems()}
                         <div key={0} className='instanceItem' style={[InstancesStyles.instanceItem, InstancesStyles.createInstanceItem, {width: 120}]} onClick={() => this.openInstance({id: 0})}>
                             <p>
                                 <i className='material-icons'>add_circle_outline</i>
