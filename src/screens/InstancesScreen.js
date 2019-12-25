@@ -12,14 +12,15 @@ class InstancesScreen extends React.Component {
 
     state = {
         loaded: false,
+        searchText: '',
         instances: [],
         instance: null,
+        selectedInstance: null,
         createInstance: false,
         contextVisible: false,
+        settingsMenu: false,
         mouseX: 0,
-        mouseY: 0,
-        selectedInstance: null,
-        searchText: ''
+        mouseY: 0
     };
 
     componentWillMount() {
@@ -39,10 +40,14 @@ class InstancesScreen extends React.Component {
     }
 
     handleClick = (event) => {
-        const {contextVisible} = this.state;
+        const {contextVisible, settingsMenu} = this.state;
 
         if(contextVisible && (!event.target.id || event.target.id.indexOf('context') <= -1)) {
             this.setState({contextVisible: false, selectedInstance: null});
+        }
+
+        if(settingsMenu && (!event.target.id || event.target.id.indexOf('dropdownSettings') <= -1)) {
+            this.setState({settingsMenu: false});
         }
     };
 
@@ -69,17 +74,17 @@ class InstancesScreen extends React.Component {
         this.setState({instances, instance: newInstance});
     };
 
-    deletePack = () => {
-        let {instances, selectedInstance} = this.state;
+    deletePack = (instance) => {
+        let {instances} = this.state;
 
-        let index = instances.indexOf(selectedInstance);
+        let index = instances.indexOf(instance);
         if(~index) {
             instances.splice(index, 1);
         }
 
-        this.props.removePack(selectedInstance);
-        this.setState({instances: instances});
-        ModpackUtils.deleteInstance(selectedInstance);
+        this.props.removePack(instance);
+        this.setState({instances});
+        ModpackUtils.deleteInstance(instance);
     };
 
     ContextMenu = () => {
@@ -90,7 +95,7 @@ class InstancesScreen extends React.Component {
                 <button key='context_play' style={[GlobalStyles.contextItem, {color: 'lightgreen'}]}>Play</button>
                 <button key='context_openfolder' style={GlobalStyles.contextItem} onClick={() => ModpackUtils.openInstanceFolder(selectedInstance)}>Open folder</button>
                 <hr/>
-                <button key='context_delete' style={[GlobalStyles.contextItem, {color: 'red'}]} onClick={this.deletePack}>Delete</button>
+                <button key='context_delete' style={[GlobalStyles.contextItem, {color: 'red'}]} onClick={() => this.deletePack(selectedInstance)}>Delete</button>
             </div>
         );
     };
@@ -125,7 +130,7 @@ class InstancesScreen extends React.Component {
         let filteredList = [];
 
         instances.forEach(instance => {
-            if(instance.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
+            if(~instance.name.toLowerCase().indexOf(searchText.toLowerCase())) {
                 filteredList.push(instance);
             }
         });
@@ -136,7 +141,9 @@ class InstancesScreen extends React.Component {
     };
 
     InstanceContent = () => {
-        let {instance} = this.state;
+        let {instance, currentInstance, settingsMenu} = this.state;
+        let button = document.getElementById('dropdownSettings');
+        let buttonPos = button ? button.getBoundingClientRect() : {left: 0, top: 0};
 
         if(instance) {
             return (
@@ -148,8 +155,20 @@ class InstancesScreen extends React.Component {
                                 <p style={InstancesStyles.description}>{instance.description ? instance.description : ''}</p>
 
                                 <div style={InstancesStyles.options}>
-                                    <button onClick={() => console.log("Clicked Play!")} key='play' style={[InstancesStyles.optionsBtn, {float: 'left', backgroundColor: '#3DB4F2'}]}>Play</button>
-                                    <button onClick={this.deletePack} key='delete' style={[InstancesStyles.optionsBtn, {float: 'right', backgroundColor: '#E85D75'}]}>Delete</button>
+                                    <button onClick={() => console.log("Clicked Play!")} key='play' style={[InstancesStyles.optionsBtn, {backgroundColor: '#3DB4F2'}]}>Play</button>
+                                    <button onClick={() => this.deletePack(currentInstance)} key='delete' style={[InstancesStyles.optionsBtn, {backgroundColor: '#E85D75'}]}>Delete</button>
+
+
+                                        <button onClick={() => this.setState({settingsMenu: !settingsMenu})} id='dropdownSettings' key='settings' style={[InstancesStyles.optionsBtn, {backgroundColor: '#E85D75', width: 'auto'}]}>...</button>
+
+                                        {
+                                            settingsMenu ?
+                                            <div style={[GlobalStyles.contextMenu, {left: buttonPos.left, top: buttonPos.top + 8}]}>
+                                                <button style={GlobalStyles.contextItem} key='addMods' onClick={() => console.log("Clicked add Mods!")}>Add Mods</button>
+                                                <button style={GlobalStyles.contextItem} key='settingsSubItem' onClick={() => console.log("Clicked settings")}>Settings</button>
+                                            </div> : null
+                                        }
+
                                 </div>
                             </div>
 

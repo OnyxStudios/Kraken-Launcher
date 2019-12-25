@@ -101,7 +101,6 @@ let InstancesStyles = {
         width: 300
     },
     optionsBtn: {
-        marginBottom: 12,
         paddingTop: 12,
         paddingBottom: 12,
         paddingRight: 20,
@@ -110,7 +109,9 @@ let InstancesStyles = {
         color: 'white',
         border: 'none',
         opacity: 0.9,
-        width: 140,
+        width: 100,
+        borderRadius: 2,
+        marginRight: 10,
         ':hover': {
             opacity: 1
         }
