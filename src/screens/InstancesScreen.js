@@ -12,15 +12,21 @@ class InstancesScreen extends React.Component {
 
     state = {
         loaded: false,
+        //Instance states
         searchText: '',
         instances: [],
         instance: null,
         selectedInstance: null,
-        createInstance: false,
+        //Context and settings menu positioning and display
         contextVisible: false,
         settingsMenu: false,
         mouseX: 0,
-        mouseY: 0
+        mouseY: 0,
+        //All popup menu and overlay window stuff
+        popupMenu: false,
+        createInstance: false,
+        modifyInstance: false,
+        addMods: false
     };
 
     componentWillMount() {
@@ -33,10 +39,12 @@ class InstancesScreen extends React.Component {
 
     componentDidMount() {
         document.addEventListener('click', this.handleClick);
+        document.addEventListener('keydown', this.handleKey);
     }
 
     componentWillUnmount() {
         document.removeEventListener('click', this.handleClick);
+        document.removeEventListener('keydown', this.handleKey);
     }
 
     handleClick = (event) => {
@@ -51,13 +59,21 @@ class InstancesScreen extends React.Component {
         }
     };
 
+    handleKey = (event) => {
+        const {popupMenu} = this.state;
+
+        if(event.key === 'Escape' && popupMenu) {
+            this.setState({popupMenu: false, createInstance: false, modifyInstance: false})
+        }
+    };
+
     openContext = (event, instance) => {
         event.preventDefault();
         this.setState({contextVisible: true, mouseX: event.clientX, mouseY: event.clientY - 30, selectedInstance: instance});
     };
 
     openInstance = (instance) => {
-        this.setState(instance.id === 0 ? {createInstance: true} : {instance})
+        this.setState(instance.id === 0 ? {popupMenu: true, createInstance: true} : {instance})
     };
 
     modifyInstanceMod = (modname) => {
@@ -100,14 +116,37 @@ class InstancesScreen extends React.Component {
         );
     };
 
-    CreateInstance = () => {
+    PopupMenu = () => {
+        let {createInstance, modifyInstance} = this.state;
+
         return(
             <div style={InstancesStyles.blurredBackground}>
-                <div style={InstancesStyles.createInstance}>
-                    <center>
-                        <button onClick={() => this.setState({createInstance: false})}>cancel</button>
-                    </center>
-                </div>
+                {createInstance ? this.CreateInstance() : null}
+                {modifyInstance ? this.ModifyInstance() : null}
+            </div>
+        );
+    };
+
+    CreateInstance = () => {
+        return (
+            <div style={InstancesStyles.createInstance}>
+                <center>
+                    <button onClick={() => this.setState({popupMenu: false, createInstance: false})}>cancel</button>
+                    <br />
+                    <p>Create Instance</p>
+                </center>
+            </div>
+        );
+    };
+
+    ModifyInstance = () => {
+        return (
+            <div style={InstancesStyles.createInstance}>
+                <center>
+                    <button onClick={() => this.setState({popupMenu: false, modifyInstance: false})}>cancel</button>
+                    <br />
+                    <p>Modify Instance</p>
+                </center>
             </div>
         );
     };
@@ -165,7 +204,7 @@ class InstancesScreen extends React.Component {
                                             settingsMenu ?
                                             <div style={[GlobalStyles.contextMenu, {left: buttonPos.left, top: buttonPos.top + 8}]}>
                                                 <button style={GlobalStyles.contextItem} key='addMods' onClick={() => console.log("Clicked add Mods!")}>Add Mods</button>
-                                                <button style={GlobalStyles.contextItem} key='settingsSubItem' onClick={() => console.log("Clicked settings")}>Settings</button>
+                                                <button style={GlobalStyles.contextItem} key='settingsSubItem' onClick={() => this.setState({popupMenu: true, modifyInstance: true})}>Settings</button>
                                             </div> : null
                                         }
 
@@ -218,7 +257,7 @@ class InstancesScreen extends React.Component {
     };
 
     render() {
-        let {loaded, contextVisible, createInstance, instances, searchText} = this.state;
+        let {loaded, contextVisible, instances, searchText, popupMenu} = this.state;
 
         if(!loaded) {
             return (
@@ -231,7 +270,7 @@ class InstancesScreen extends React.Component {
         return(
             <div style={[NavStyles.content, InstancesStyles.instancesPage]}>
                 {contextVisible ? this.ContextMenu() : null}
-                {createInstance ? this.CreateInstance() : null}
+                {popupMenu ? this.PopupMenu() : null}
 
                 <div style={InstancesStyles.instances}>
                     <center>
