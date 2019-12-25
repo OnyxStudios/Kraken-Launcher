@@ -33,8 +33,7 @@ class InstancesScreen extends React.Component {
         let tempInstances = ModpackUtils.parseInstances();
 
         tempInstances.forEach(instance => this.props.addPack(instance));
-        this.setState({instances: tempInstances});
-        this.setState({loaded: true});
+        this.setState({loaded: true, instances: tempInstances});
     }
 
     componentDidMount() {
@@ -204,6 +203,7 @@ class InstancesScreen extends React.Component {
                                             settingsMenu ?
                                             <div style={[GlobalStyles.contextMenu, {left: buttonPos.left, top: buttonPos.top + 8}]}>
                                                 <button style={GlobalStyles.contextItem} key='addMods' onClick={() => console.log("Clicked add Mods!")}>Add Mods</button>
+                                                <button style={GlobalStyles.contextItem} key='refresh' onClick={() => this.componentWillMount()}>Refresh Instance</button>
                                                 <button style={GlobalStyles.contextItem} key='settingsSubItem' onClick={() => this.setState({popupMenu: true, modifyInstance: true})}>Settings</button>
                                             </div> : null
                                         }
@@ -232,16 +232,20 @@ class InstancesScreen extends React.Component {
                                     {
                                         instance.mods.size <= 0 ? null :
                                             instance.mods.map(mod => {
+                                                let modExists = ModpackUtils.doesModExist(instance.id, mod.file);
                                                 return (
                                                     <tr key={mod.name}>
                                                         <td>{mod.name}</td>
                                                         <td>{mod.author}</td>
-                                                        <td>{mod.file.replace('.disabled', '')}</td>
+                                                        <td>{modExists ? mod.file.replace('.disabled', '') : <span style={{color: 'red'}}>Missing: {mod.file}</span>}</td>
                                                         <td>
-                                                            <label className='modStatusBox'>
-                                                                <input type='checkbox' checked={mod.enabled} onChange={() => this.modifyInstanceMod(mod.name)}/>
-                                                                <span className='checkmark'></span>
-                                                            </label>
+                                                            {modExists ?
+                                                                <label className='modStatusBox'>
+                                                                    <input type='checkbox' checked={mod.enabled}
+                                                                           onChange={() => this.modifyInstanceMod(mod.name)}/>
+                                                                    <span className='checkmark'></span>
+                                                                </label> : null
+                                                            }
                                                         </td>
                                                     </tr>
                                                 );

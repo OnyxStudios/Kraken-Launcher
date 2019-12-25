@@ -101,9 +101,14 @@ function deleteFolder(folderPath) {
     }
 }
 
+function doesModExist(instanceID, modFile) {
+    return fs.existsSync(instancesFolder + instanceID + '/mods/' + modFile);
+}
+
 module.exports = {
     parseInstances,
     toggleMod,
     openInstanceFolder,
-    deleteInstance
+    deleteInstance,
+    doesModExist
 };
