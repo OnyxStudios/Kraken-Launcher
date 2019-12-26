@@ -4,6 +4,7 @@ import {addPack, removePack} from './../redux/Actions';
 import {connect} from "react-redux";
 
 const ModpackUtils = require('./../utils/ModpackUtils');
+const LoaderUtils = require('./../utils/LoaderUtils');
 const NavStyles = require('./../styles/NavStyles');
 const InstancesStyles = require('./../styles/InstancesStyles');
 const GlobalStyles = require('./../styles/GlobalStyles');
@@ -26,13 +27,22 @@ class InstancesScreen extends React.Component {
         popupMenu: false,
         createInstance: false,
         modifyInstance: false,
-        addMods: false
+        addMods: false,
+        //Instance properties
+        instanceName: '',
+        instanceDesc: '',
+        instanceVersion: '',
+        instanceAuthor: '',
+        fabricVersions: [],
+        forgeVersions: []
     };
 
     componentWillMount() {
         let tempInstances = ModpackUtils.parseInstances();
 
         tempInstances.forEach(instance => this.props.addPack(instance));
+        LoaderUtils.getFabricVersions().then(versions => this.setState({fabricVersions: versions}));
+        LoaderUtils.getForgeVersions().then(versions => this.setState({forgeVersions: versions}));
         this.setState({loaded: true, instances: tempInstances});
     }
 
@@ -127,12 +137,81 @@ class InstancesScreen extends React.Component {
     };
 
     CreateInstance = () => {
+        const {instanceName, instanceDesc, instanceVersion, instanceAuthor, fabricVersions, forgeVersions} = this.state;
+        let e = document.getElementById('loaderSelect');
+        if(!e) e = {selectedIndex: 0, options: [{value: 'forge'}]};
+
         return (
             <div style={InstancesStyles.createInstance}>
                 <center>
-                    <button onClick={() => this.setState({popupMenu: false, createInstance: false})}>cancel</button>
-                    <br />
-                    <p>Create Instance</p>
+                    <span>
+                        Create New Instance
+                        <hr style={{border: '2px solid #3DB4F2'}}/>
+                    </span>
+
+                    <form onSubmit={(event) => {
+                        event.preventDefault();
+                        ModpackUtils.createInstance(instanceName, instanceDesc, instanceVersion, instanceAuthor);
+                        this.componentWillMount();
+                    }}>
+                        <input
+                            style={InstancesStyles.inputFields}
+                            type='text'
+                            placeholder='Instance Name'
+                            value={instanceName}
+                            onChange={(event) => this.setState({instanceName: event.target.value})}
+                        />
+
+                        <input
+                            style={InstancesStyles.inputFields}
+                            type='text'
+                            placeholder='Description'
+                            value={instanceDesc}
+                            onChange={(event) => this.setState({instanceDesc: event.target.value})}
+                        />
+
+                        <input
+                            style={InstancesStyles.inputFields}
+                            type='text'
+                            placeholder='Version'
+                            value={instanceVersion}
+                            onChange={(event) => this.setState({instanceVersion: event.target.value})}
+                        />
+
+                        <input
+                            style={InstancesStyles.inputFields}
+                            type='text'
+                            placeholder='Author'
+                            value={instanceAuthor}
+                            onChange={(event) => this.setState({instanceAuthor: event.target.value})}
+                        />
+
+                        <select id='loaderSelect' style={[InstancesStyles.select, {marginRight: '2%'}]}>
+                            <option style={InstancesStyles.selectOptions} value='forge'>Forge</option>
+                            <option style={InstancesStyles.selectOptions} value='fabric'>Fabric</option>
+                        </select>
+
+                        <select style={InstancesStyles.select}>
+                            {
+                                (e && e.options[e.selectedIndex].value === 'forge' ? forgeVersions : fabricVersions).map(version => {
+                                return <option style={InstancesStyles.selectOptions} value={version}>{version}</option>;
+                            })}
+                        </select>
+
+                        <button style={[InstancesStyles.optionsBtn, {backgroundColor: '#3DB4F2'}]}
+                                key='submitCreateInstance' onClick={null}>Submit
+                        </button>
+
+                        <button style={[InstancesStyles.optionsBtn, {backgroundColor: '#E85D75'}]}
+                                key='cancelCreateInstance'
+                                onClick={() => this.setState({popupMenu: false, createInstance: false})}>Cancel
+                        </button>
+                    </form>
+
+                    <button
+                        style={[InstancesStyles.optionsBtn, {backgroundColor: '#14e38d', width: 'auto', marginTop: 10}]}
+                        key='importInstance' onClick={null}>Import Instance
+                    </button>
                 </center>
             </div>
         );
@@ -235,8 +314,8 @@ class InstancesScreen extends React.Component {
                                                 let modExists = ModpackUtils.doesModExist(instance.id, mod.file);
                                                 return (
                                                     <tr key={mod.name}>
-                                                        <td>{mod.name}</td>
-                                                        <td>{mod.author}</td>
+                                                        <td style={modExists ? null : {color: 'red'}}>{mod.name}</td>
+                                                        <td style={modExists ? null : {color: 'red'}}>{mod.author}</td>
                                                         <td>{modExists ? mod.file.replace('.disabled', '') : <span style={{color: 'red'}}>Missing: {mod.file}</span>}</td>
                                                         <td>
                                                             {modExists ?

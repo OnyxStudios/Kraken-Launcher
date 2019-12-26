@@ -59,8 +59,10 @@ let InstancesStyles = {
         left: '50%',
         top: '50%',
         width: 300,
-        height: 400,
-        borderRadius: '10%',
+        height: 'auto',
+        paddingTop: 20,
+        paddingBottom: 20,
+        borderRadius: 5,
         backgroundColor: '#272C32',
         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.6)'
     },
@@ -132,6 +134,30 @@ let InstancesStyles = {
         marginTop: 10,
         fontSize: 16,
         padding: 6
+    },
+    inputFields: {
+        width: '80%',
+        padding: 10,
+        outline: 'none',
+        border: 'none',
+        marginBottom: 10,
+        backgroundColor: 'rgba(55, 62, 72, 0.8)',
+        color: 'white'
+    },
+    select: {
+        width: '40%',
+        padding: 5,
+        outline: 'none',
+        border: 'none',
+        marginBottom: 10,
+        backgroundColor: 'rgba(55, 62, 72, 0.8)',
+        color: 'white'
+    },
+    selectOptions: {
+        backgroundColor: 'rgba(55, 62, 72, 1)',
+        padding: 5,
+        outline: 'none',
+        border: 'none'
     }
 };
 

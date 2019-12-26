@@ -105,10 +105,26 @@ function doesModExist(instanceID, modFile) {
     return fs.existsSync(instancesFolder + instanceID + '/mods/' + modFile);
 }
 
+function createInstance(name, desc, version, author) {
+    let id = Math.floor(100000 + Math.random() * 900000);
+    let packData = {
+        id: id.toString(),
+        name,
+        logo: 'https://i.imgur.com/jCnInhv.png',
+        description: desc,
+        version,
+        author,
+        launcher: {
+
+        }
+    };
+}
+
 module.exports = {
     parseInstances,
     toggleMod,
     openInstanceFolder,
     deleteInstance,
-    doesModExist
+    doesModExist,
+    createInstance
 };
