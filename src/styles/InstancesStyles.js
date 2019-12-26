@@ -102,22 +102,6 @@ let InstancesStyles = {
     options: {
         width: 300
     },
-    optionsBtn: {
-        paddingTop: 12,
-        paddingBottom: 12,
-        paddingRight: 20,
-        paddingLeft: 20,
-        cursor: 'pointer',
-        color: 'white',
-        border: 'none',
-        opacity: 0.9,
-        width: 100,
-        borderRadius: 2,
-        marginRight: 10,
-        ':hover': {
-            opacity: 1
-        }
-    },
     //Instance Mods
     instanceMods: {
         width: 600,

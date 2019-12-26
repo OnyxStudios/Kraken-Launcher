@@ -198,18 +198,18 @@ class InstancesScreen extends React.Component {
                             })}
                         </select>
 
-                        <button style={[InstancesStyles.optionsBtn, {backgroundColor: '#3DB4F2'}]}
+                        <button style={[GlobalStyles.optionsBtn, {backgroundColor: '#3DB4F2'}]}
                                 key='submitCreateInstance' onClick={null}>Submit
                         </button>
 
-                        <button style={[InstancesStyles.optionsBtn, {backgroundColor: '#E85D75'}]}
+                        <button style={[GlobalStyles.optionsBtn, {backgroundColor: '#E85D75'}]}
                                 key='cancelCreateInstance'
                                 onClick={() => this.setState({popupMenu: false, createInstance: false})}>Cancel
                         </button>
                     </form>
 
                     <button
-                        style={[InstancesStyles.optionsBtn, {backgroundColor: '#14e38d', width: 'auto', marginTop: 10}]}
+                        style={[GlobalStyles.optionsBtn, {backgroundColor: '#14e38d', width: 'auto', marginTop: 10}]}
                         key='importInstance' onClick={null}>Import Instance
                     </button>
                 </center>
@@ -272,11 +272,11 @@ class InstancesScreen extends React.Component {
                                 <p style={InstancesStyles.description}>{instance.description ? instance.description : ''}</p>
 
                                 <div style={InstancesStyles.options}>
-                                    <button onClick={() => console.log("Clicked Play!")} key='play' style={[InstancesStyles.optionsBtn, {backgroundColor: '#3DB4F2'}]}>Play</button>
-                                    <button onClick={() => this.deletePack(currentInstance)} key='delete' style={[InstancesStyles.optionsBtn, {backgroundColor: '#E85D75'}]}>Delete</button>
+                                    <button onClick={() => console.log("Clicked Play!")} key='play' style={[GlobalStyles.optionsBtn, {backgroundColor: '#3DB4F2'}]}>Play</button>
+                                    <button onClick={() => this.deletePack(currentInstance)} key='delete' style={[GlobalStyles.optionsBtn, {backgroundColor: '#E85D75'}]}>Delete</button>
 
 
-                                        <button onClick={() => this.setState({settingsMenu: !settingsMenu})} id='dropdownSettings' key='settings' style={[InstancesStyles.optionsBtn, {backgroundColor: '#E85D75', width: 'auto'}]}>...</button>
+                                        <button onClick={() => this.setState({settingsMenu: !settingsMenu})} id='dropdownSettings' key='settings' style={[GlobalStyles.optionsBtn, {backgroundColor: '#E85D75', width: 'auto'}]}>...</button>
 
                                         {
                                             settingsMenu ?

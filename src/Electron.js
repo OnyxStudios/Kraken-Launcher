@@ -14,7 +14,7 @@ function createWindow () {
     title: "Kraken Launcher",
     width: 1152,
     height: 720,
-    resizable: true,
+    resizable: false,
     frame: false,
     backgroundColor: '#FFF',
     webPreferences: {

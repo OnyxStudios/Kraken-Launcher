@@ -25,6 +25,22 @@ let GlobalStyles = {
         ':hover': {
             backgroundColor: '#2c2e33'
         }
+    },
+    optionsBtn: {
+        paddingTop: 12,
+        paddingBottom: 12,
+        paddingRight: 20,
+        paddingLeft: 20,
+        cursor: 'pointer',
+        color: 'white',
+        border: 'none',
+        opacity: 0.9,
+        width: 100,
+        borderRadius: 2,
+        marginRight: 10,
+        ':hover': {
+            opacity: 1
+        }
     }
 };
 
