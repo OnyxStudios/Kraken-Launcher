@@ -1,41 +1,66 @@
-const parseString = require('xml2js').parseString;
+const KrakenUtils = require('./KrakenUtils');
+//Vanilla
+const minecraftVersionsURL = 'https://launchermeta.mojang.com/mc/game/version_manifest.json';
+
+//Fabric
 const fabricMavenURL = 'https://maven.fabricmc.net/net/fabricmc/fabric-installer/';
-const fabricVersionsURL = 'https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml';
+const fabricMetaURL = 'https://meta.fabricmc.net/v2/versions/';
 
+//Forge
 const forgeMavenURL = 'https://files.minecraftforge.net/maven/net/minecraftforge/forge/';
-const forgeVersionsURL = 'https://files.minecraftforge.net/maven/net/minecraftforge/forge/maven-metadata.xml';
+const forgeVersionsURL = 'https://files.minecraftforge.net/maven/net/minecraftforge/forge/promotions.json';
 
-function getFabricVersions() {
-    return fetch(fabricVersionsURL, {method: 'GET'}).then(response => {
-        return response ? response.text() : null;
-    }).then(data => {
-        let versions;
+function getMinecraftVersions(versionURL, includeUnstable) {
+    return fetch(versionURL).then(res => res ? res.json() : null).then(data => {
+        let versions = [];
 
-        parseString(data, function(err, result) {
-            if(err) console.log(err);
-            versions = JSON.parse(JSON.stringify(result)).metadata.versioning[0].versions[0].version;
-        });
+        if(data.versions) {
+            data.versions.forEach(entry => {
+               if(entry.type !== 'release' && !includeUnstable) return;
+               versions.push(entry.id);
+            });
+        }else {
+            data.forEach(entry => {
+                if(!entry.stable && !includeUnstable) return;
+                versions.push(entry.version);
+            });
+        }
 
-        return versions;
+        return KrakenUtils.sortVersions(versions);
     });
 }
 
-function getForgeVersions() {
-    return fetch(forgeVersionsURL, {method: 'GET'}).then(response => {
-        return response ? response.text() : null;
-    }).then(data => {
-        let versions;
+function getLoaderVersions(loaderURL) {
+    return fetch(loaderURL).then(res => res ? res.json() : null).then(async data => {
+        let versions = {};
 
-        parseString(data, function(err, result) {
-            if(err) console.log(err);
-            versions = JSON.parse(JSON.stringify(result)).metadata.versioning[0].versions[0].version;
-        });
+        if (data.promos) {
+            for (let key in data.promos) {
+                let entry = data.promos[key];
+                if(!versions[entry.mcversion]) versions[entry.mcversion] = [];
+                if(!~versions[entry.mcversion].indexOf(entry.version)) versions[entry.mcversion].push(entry.version);
+            }
+        } else {
+            let mcVersions = [];
+            await getMinecraftVersions(fabricMetaURL + 'game', false).then(versionsArr => {mcVersions.push(...versionsArr)});
+
+            mcVersions.forEach(version => {
+                versions[version] = [];
+
+                data.forEach(entry => {
+                    versions[version].push(entry.version);
+                });
+            });
+        }
 
         return versions;
     });
 }
 
 module.exports = {
-    getFabricVersions,
-    getForgeVersions
+    minecraftVersionsURL,
+    fabricMetaURL,
+    forgeVersionsURL,
+    getMinecraftVersions,
+    getLoaderVersions
 };

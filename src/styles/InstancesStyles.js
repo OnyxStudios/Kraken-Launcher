@@ -128,6 +128,15 @@ let InstancesStyles = {
         backgroundColor: 'rgba(55, 62, 72, 0.8)',
         color: 'white'
     },
+    halfInputFields: {
+        width: '36%',
+        padding: 10,
+        outline: 'none',
+        border: 'none',
+        marginBottom: 10,
+        backgroundColor: 'rgba(55, 62, 72, 0.8)',
+        color: 'white'
+    },
     select: {
         width: '40%',
         padding: 5,

@@ -7,14 +7,14 @@ let HomeStyles = {
         marginTop: 30
     },
     featuredContent: {
-        marginLeft: 25,
         width: 200,
         height: 'calc(100% - 55px)',
+        marginRight: 25,
+        marginLeft: 25,
         marginTop: 5,
-        display: 'flex',
-        flexDirection: 'column',
         float: 'right',
-        marginRight: 25
+        display: 'flex',
+        flexDirection: 'column'
     },
     news: {
         width: '100%',
@@ -23,13 +23,15 @@ let HomeStyles = {
         height: 'calc(100% - 230px)',
         overflowX: 'hidden',
         overflowY: 'scroll',
-        borderRadius: 5,
-        textAlign: 'center'
+        borderRadius: 5
     },
     links: {
         height: 200,
         width: '100%',
-        marginTop: 25
+        marginTop: 25,
+        display: 'flex',
+        flexWrap: 'wrap',
+        flexDirection: 'column'
     },
     link: {
         width: 'calc(50% - 12.5px)',

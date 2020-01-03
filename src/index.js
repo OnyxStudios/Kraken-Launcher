@@ -2,16 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Radium from 'radium';
 import {BrowserRouter, Switch, Route, NavLink} from 'react-router-dom';
-import {Provider} from 'react-redux';
+import {connect, Provider} from 'react-redux';
 import Store from './redux/Store';
 
 import HomeScreen from './screens/HomeScreen';
 import InstancesScreen from './screens/InstancesScreen';
 import CursePacksScreen from './screens/CursePacksScreen';
 import SettingsScreen from './screens/SettingsScreen';
+import {setVersions} from "./redux/Actions";
 
 const NavStyles = require('./styles/NavStyles');
-const StorageUtils = require('./utils/StorageUtils');
+const LoaderUtils = require('./utils/LoaderUtils');
 
 class App extends React.Component {
 
@@ -21,6 +22,12 @@ class App extends React.Component {
             width: 0,
             height: 0
         };
+    }
+
+    componentWillMount() {
+        LoaderUtils.getMinecraftVersions(LoaderUtils.minecraftVersionsURL, false).then(versions => this.props.setVersions('vanilla', versions));
+        LoaderUtils.getLoaderVersions(LoaderUtils.forgeVersionsURL).then(versions => this.props.setVersions('forge', versions));
+        LoaderUtils.getLoaderVersions(LoaderUtils.fabricMetaURL + 'loader').then(versions => this.props.setVersions('fabric', versions));
     }
 
     componentDidMount() {
@@ -61,5 +68,9 @@ class App extends React.Component {
     }
 }
 
-App = Radium(App);
+const mapStateToProps = state => {
+    return {loaders: state.loaders};
+};
+
+App = connect(mapStateToProps, {setVersions})(Radium(App));
 ReactDOM.render(<Provider store={Store}><App /></Provider>, document.getElementById('root'));

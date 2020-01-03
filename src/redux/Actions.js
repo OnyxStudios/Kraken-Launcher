@@ -1,4 +1,4 @@
-import {ADD_PACK, REMOVE_PACK} from "./ActionTypes";
+import {ADD_PACK, REMOVE_PACK, SET_VERSIONS} from "./ActionTypes";
 
 export const addPack = (pack) => {
     return {
@@ -12,4 +12,14 @@ export const removePack = (pack) => {
         type: REMOVE_PACK,
         payload: pack
     };
+};
+
+export const setVersions = (loader, versions) => {
+    return {
+        type: SET_VERSIONS,
+        payload: {
+            loader,
+            versions
+        }
+    }
 };

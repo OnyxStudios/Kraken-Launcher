@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 
 const ModpackUtils = require('./../utils/ModpackUtils');
 const LoaderUtils = require('./../utils/LoaderUtils');
+const KrakenUtils = require('./../utils/KrakenUtils');
 const NavStyles = require('./../styles/NavStyles');
 const InstancesStyles = require('./../styles/InstancesStyles');
 const GlobalStyles = require('./../styles/GlobalStyles');
@@ -33,17 +34,17 @@ class InstancesScreen extends React.Component {
         instanceDesc: '',
         instanceVersion: '',
         instanceAuthor: '',
-        fabricVersions: [],
-        forgeVersions: []
+        //Loader properties
+        selectedLoader: 'vanilla',
+        selectedMinecraftVersion: '',
+        selectedLoaderVersion: ''
     };
 
     componentWillMount() {
         let tempInstances = ModpackUtils.parseInstances();
 
         tempInstances.forEach(instance => this.props.addPack(instance));
-        LoaderUtils.getFabricVersions().then(versions => this.setState({fabricVersions: versions}));
-        LoaderUtils.getForgeVersions().then(versions => this.setState({forgeVersions: versions}));
-        this.setState({loaded: true, instances: tempInstances});
+        this.setState({loaded: true, instances: tempInstances, selectedMinecraftVersion: KrakenUtils.sortVersions(this.props.loaders['vanilla'].versions)[0]});
     }
 
     componentDidMount() {
@@ -137,9 +138,8 @@ class InstancesScreen extends React.Component {
     };
 
     CreateInstance = () => {
-        const {instanceName, instanceDesc, instanceVersion, instanceAuthor, fabricVersions, forgeVersions} = this.state;
-        let e = document.getElementById('loaderSelect');
-        if(!e) e = {selectedIndex: 0, options: [{value: 'forge'}]};
+        const {instanceName, instanceDesc, instanceVersion, instanceAuthor, selectedLoader, selectedMinecraftVersion, selectedLoaderVersion} = this.state;
+        const {loaders} = this.props;
 
         return (
             <div style={InstancesStyles.createInstance}>
@@ -171,7 +171,7 @@ class InstancesScreen extends React.Component {
                         />
 
                         <input
-                            style={InstancesStyles.inputFields}
+                            style={[InstancesStyles.halfInputFields]}
                             type='text'
                             placeholder='Version'
                             value={instanceVersion}
@@ -179,39 +179,52 @@ class InstancesScreen extends React.Component {
                         />
 
                         <input
-                            style={InstancesStyles.inputFields}
+                            style={[InstancesStyles.halfInputFields, {marginLeft: '2%'}]}
                             type='text'
                             placeholder='Author'
                             value={instanceAuthor}
                             onChange={(event) => this.setState({instanceAuthor: event.target.value})}
                         />
 
-                        <select id='loaderSelect' style={[InstancesStyles.select, {marginRight: '2%'}]}>
-                            <option style={InstancesStyles.selectOptions} value='forge'>Forge</option>
-                            <option style={InstancesStyles.selectOptions} value='fabric'>Fabric</option>
-                        </select>
-
-                        <select style={InstancesStyles.select}>
-                            {
-                                (e && e.options[e.selectedIndex].value === 'forge' ? forgeVersions : fabricVersions).map(version => {
-                                return <option style={InstancesStyles.selectOptions} value={version}>{version}</option>;
+                        <select
+                            id='loaderSelect'
+                            style={[InstancesStyles.select, {marginRight: '2%'}]}
+                            onChange={event => {
+                                let selectedValue = event.target.value;
+                                let mc = selectedValue === 'vanilla' ? loaders[selectedValue].versions[0] : KrakenUtils.sortVersions(Object.keys(loaders[selectedValue].versions))[0];
+                                let loader = selectedValue === 'vanilla' ? '' : loaders[selectedValue].versions[mc][0];
+                                this.setState({selectedLoader: selectedValue, selectedMinecraftVersion: mc, selectedLoaderVersion: loader});
+                            }}
+                        >
+                            {Object.keys(loaders).map((key, index) => {
+                                return <option style={InstancesStyles.selectOptions} value={key}>{loaders[key].name}</option>;
                             })}
                         </select>
 
-                        <button style={[GlobalStyles.optionsBtn, {backgroundColor: '#3DB4F2'}]}
-                                key='submitCreateInstance' onClick={null}>Submit
-                        </button>
+                        <select id='mcVersionSelect' style={InstancesStyles.select} onChange={event => {
+                            let loader = selectedLoader === 'vanilla' ? '' : loaders[selectedLoader].versions[event.target.value][0];
+                            this.setState({selectedMinecraftVersion: event.target.value, selectedLoaderVersion: loader});
+                        }}>
+                            {
+                                Array.isArray(loaders[selectedLoader].versions) ?
+                                    KrakenUtils.sortVersions(loaders[selectedLoader].versions).map(version => <option style={InstancesStyles.selectOptions} value={version}>{version}</option>) :
+                                    KrakenUtils.sortVersions(Object.keys(loaders[selectedLoader].versions)).map(version => <option style={InstancesStyles.selectOptions} value={version}>{version}</option>)
+                            }
+                        </select>
 
-                        <button style={[GlobalStyles.optionsBtn, {backgroundColor: '#E85D75'}]}
-                                key='cancelCreateInstance'
-                                onClick={() => this.setState({popupMenu: false, createInstance: false})}>Cancel
-                        </button>
+                        {
+                            selectedLoader === 'vanilla' ? null :
+                                <select id='loaderVersionSelect' style={InstancesStyles.select} onChange={event => this.setState({selectedLoaderVersion: event.target.value})}>
+                                    {KrakenUtils.sortVersions(loaders[selectedLoader].versions[selectedMinecraftVersion]).map(version => <option style={InstancesStyles.selectOptions} value={version}>{version}</option>)}
+                                </select>
+                        }
+
+                        <br/>
+                        <button style={[GlobalStyles.optionsBtn, {backgroundColor: '#3DB4F2'}]} key='submitCreateInstance' onClick={null}>Create</button>
+                        <button style={[GlobalStyles.optionsBtn, {backgroundColor: '#E85D75'}]} key='cancelCreateInstance' onClick={() => this.setState({popupMenu: false, createInstance: false})}>Cancel</button>
                     </form>
 
-                    <button
-                        style={[GlobalStyles.optionsBtn, {backgroundColor: '#14e38d', width: 'auto', marginTop: 10}]}
-                        key='importInstance' onClick={null}>Import Instance
-                    </button>
+                    <button style={[GlobalStyles.optionsBtn, {backgroundColor: '#14e38d', width: 'auto', marginTop: 10}]} key='importInstance' onClick={null}>Import Instance</button>
                 </center>
             </div>
         );
@@ -377,7 +390,7 @@ class InstancesScreen extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return {instances: state.modpacks};
+    return {instances: state.modpacks, loaders: state.loaders};
 };
 
 export default connect(mapStateToProps, {addPack, removePack})(Radium(InstancesScreen));
