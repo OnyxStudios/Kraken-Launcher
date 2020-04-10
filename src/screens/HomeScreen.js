@@ -1,15 +1,14 @@
 import React from 'react';
-import Radium from 'radium';
-
+import {MuiThemeProvider, withStyles} from "@material-ui/core";
+import {HomeStyles} from "../styles/HomeStyles";
+import {defaultTheme} from "../styles/Theme";
 const request = require('request');
 const KrakenUtils = require('./../utils/KrakenUtils');
-const NavStyles = require('./../styles/NavStyles');
-const GlobalStyles = require('./../styles/GlobalStyles');
-const HomeStyles = require('./../styles/HomeStyles');
 
-const discordLink = 'https://discord.gg/WX2HaZy';
-const issuesLink = 'https://github.com/NerdHubMC/Kraken-Launcher/issues';
-const newsLink = 'https://raw.githubusercontent.com/NerdHubMC/Kraken-Launcher/master/news.md';
+const discordLink = 'https://discord.gg/92pf3WY';
+const issuesLink = 'https://github.com/OnyxStudios/Kraken-Launcher/issues';
+const onyxLink = 'https://onyxstudios.dev/';
+const newsLink = 'https://raw.githubusercontent.com/OnyxStudios/Kraken-Launcher/master/news.md';
 
 class HomeScreen extends React.Component {
 
@@ -21,7 +20,7 @@ class HomeScreen extends React.Component {
         require('electron').remote.shell.openExternal(link);
     };
 
-    componentWillMount() {
+    componentDidMount() {
         request(newsLink, (err, res, body) => KrakenUtils.getNews(this.updateNews, err, res, body));
     }
 
@@ -30,50 +29,50 @@ class HomeScreen extends React.Component {
     };
 
     render() {
-        const {news} = this.state;
+        let {news} = this.state;
+        let {classes} = this.props;
 
         return(
-            <div style={[NavStyles.content, {overflowY: 'hidden'}]}>
-                <div style={HomeStyles.mainContent}>
-                    <div style={HomeStyles.news}>
-                        <div dangerouslySetInnerHTML={{__html: news}} />
-                    </div>
-
-                    <div style={HomeStyles.links}>
-                        <div onClick={() => this.openLink(discordLink)} key='discord' style={[HomeStyles.link, {backgroundImage: 'url(/assets/images/discord_background.png)', backgroundSize: 'cover'}]}>
-                            <img style={{width: '100%', height: 'calc(100% - 136)'}} src='/assets/images/discord_logo.png' alt='' />
+            //Add in issue page link and discord server link buttons
+            <MuiThemeProvider theme={defaultTheme.main}>
+                <div className={classes.container}>
+                    <div className={classes.featuredPacks}>
+                        <div className={classes.pack} style={{backgroundImage: 'url(https://media.forgecdn.net/avatars/199/573/636907930795697123.png)'}}>
+                            <button className={classes.installBtn}>Install</button>
                         </div>
 
-                        <div onClick={() => this.openLink(issuesLink)} key='issues' style={[HomeStyles.link, {backgroundImage: 'url(/assets/images/issues_background.png)', backgroundSize: 'cover', marginLeft: 25}]}>
-                            <img style={{width: '50%', float: 'left'}} src='/assets/images/logo.png' alt='' />
+                        <div className={classes.marginPack} style={{backgroundImage: 'url(https://media.forgecdn.net/avatars/136/944/636511227443004307.png)'}}>
+                            <button className={classes.installBtn}>Install</button>
+                        </div>
 
-                            <span style={{display: 'inline-block', width: '50%', float: 'right'}}>
-                                <p style={HomeStyles.issuesTitle}>Issue<br />Tracker</p>
-                            </span>
+                        <div className={classes.pack} style={{backgroundImage: 'url(https://media.forgecdn.net/avatars/147/67/636574428512291945.png)'}}>
+                            <button className={classes.installBtn}>Install</button>
+                        </div>
+                    </div>
+
+                    <div className={classes.mainContent}>
+                        <div className={classes.news}>
+                            <div dangerouslySetInnerHTML={{__html: news}} />
+                        </div>
+
+                        <div className={classes.links}>
+                            <div className={classes.link} onClick={() => this.openLink(discordLink)}>
+                                <img style={{maxWidth: 180, maxHeight: 180}} src='/assets/images/discord.png' alt='' />
+                            </div>
+
+                            <div className={classes.link} onClick={() => this.openLink(onyxLink)}>
+                                <img style={{maxWidth: 180, maxHeight: 180}} src='/assets/images/OnyxWhite.png' alt='' />
+                            </div>
+
+                            <div className={classes.link} onClick={() => this.openLink(issuesLink)}>
+                                <img style={{maxWidth: 180, maxHeight: 180}} src='/assets/images/github_light.png' alt='' />
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div style={{height: 25, marginRight: 25, width: 200, float: 'right', textAlign: 'center'}}>
-                    <span style={HomeStyles.trendingTitle}>Trending Packs:</span>
-                </div>
-
-                <div style={HomeStyles.featuredContent}>
-                    <div style={[HomeStyles.featuredPack, {backgroundImage: 'url(https://media.forgecdn.net/avatars/199/573/636907930795697123.png)', backgroundSize: 'cover', marginBottom: 32.5}]}>
-                        <button key='featureOne' style={[GlobalStyles.optionsBtn, {backgroundColor: '#3DB4F2', margin: '0 auto', fontWeight: 'bold', marginBottom: 10}]}>Install</button>
-                    </div>
-
-                    <div style={[HomeStyles.featuredPack, {backgroundImage: 'url(https://media.forgecdn.net/avatars/136/944/636511227443004307.png)', backgroundSize: 'cover', marginBottom: 32.5}]}>
-                        <button key='featureTwo' style={[GlobalStyles.optionsBtn, {backgroundColor: '#3DB4F2', margin: '0 auto', marginBottom: 10}]}>Install</button>
-                    </div>
-
-                    <div style={[HomeStyles.featuredPack, {backgroundImage: 'url(https://media.forgecdn.net/avatars/147/67/636574428512291945.png)', backgroundSize: 'cover'}]}>
-                        <button key='featureThree' style={[GlobalStyles.optionsBtn, {backgroundColor: '#3DB4F2', margin: '0 auto', marginBottom: 10}]}>Install</button>
-                    </div>
-                </div>
-            </div>
+            </MuiThemeProvider>
         );
     }
 }
 
-export default Radium(HomeScreen);
+export default withStyles(HomeStyles)(HomeScreen);

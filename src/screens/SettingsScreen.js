@@ -1,17 +1,16 @@
 import React from 'react';
-import Radium from 'radium';
-
-const NavStyles = require('./../styles/NavStyles');
+import {MuiThemeProvider} from "@material-ui/core";
+import {defaultTheme} from "../styles/Theme";
 
 class SettingsScreen extends React.Component {
 
     render() {
         return(
-            <div style={NavStyles.content}>
-                <h1>Settings</h1>
-            </div>
+            <MuiThemeProvider theme={defaultTheme.main}>
+                Settings
+            </MuiThemeProvider>
         );
     }
 }
 
-export default Radium(SettingsScreen);
+export default SettingsScreen;

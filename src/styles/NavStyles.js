@@ -1,58 +1,70 @@
-let NavStyles = {
+let sideNavWidth = 240;
+
+let NavStyles = theme => ({
+    body: {
+        width: '100%',
+        height: '100%'
+    },
     content: {
-        backgroundColor: '#373E48',
-        overflowWrap: 'break-word',
-        width: 'calc(100% - 50px)',
+        width: `calc(100% - ${theme.spacing(7) + 1}px)`,
         height: '100%',
-        overflowY: 'scroll',
-        overflowX: 'hidden',
-        marginLeft: 50
+        flexGrow: 0,
+        marginLeft: theme.spacing(7) + 1,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.leavingScreen
+        })
+    },
+    contentShift: {
+        width: `calc(100% - ${sideNavWidth}px)`,
+        height: '100%',
+        flexGrow: 0,
+        marginLeft: sideNavWidth,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: theme.transitions.duration.standard
+        })
     },
     sideNav: {
-        backgroundColor: '#272C32',
-        position: 'fixed',
+        width: sideNavWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden'
+    },
+    sideNavOpen: {
+        width: sideNavWidth,
         height: '100%',
-        width: 50,
-        top: 30,
-        left: 0,
-        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.6)'
-    },
-    noPaddingLink: {
-        textDecoration: 'none',
-        display: 'block',
-        transition: 0.3
-    },
-    link: {
-        textDecoration: 'none',
-        display: 'block',
-        transition: 0.3,
-        paddingTop: 20
-    },
-    bottomLink: {
+        overflow: 'hidden',
         position: 'fixed',
-        textDecoration: 'none',
-        display: 'block',
-        transition: 0.3,
-        bottom: 8,
-        left: 14,
+        paddingTop: 22,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.easeIn,
+            duration: theme.transitions.duration.enteringScreen
+        })
+    },
+    sideNavClose: {
+        width: theme.spacing(7) + 1,
+        height: '100%',
+        overflow: 'hidden',
+        position: 'fixed',
+        paddingTop: 22,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.leavingScreen
+        }),
+        [theme.breakpoints.up('sm')]: {
+            width: theme.spacing(7) + 1
+        },
     },
     logo: {
-        display: 'block',
-        transition: 0.3,
-        paddingTop: 12,
-        width: 32,
-        height: 32
+        height: sideNavWidth * 0.1
     },
-    divider: {
-        border: '2px solid #008DFF'
-    },
-    icon: {
-        color: '#8A8F9D',
-        fontSize: 22
-    },
-    active: {
-        color: ' white !important'
+    header: {
+        display: 'flex',
+        alignItems: 'center',
+        ...theme.mixins.toolbar,
+        justifyContent: 'center'
     }
-};
+});
 
-module.exports = NavStyles;
+export {NavStyles};

@@ -1,68 +1,128 @@
-let HomeStyles = {
-    mainContent: {
-        width: 'calc(100% - 275px)',
-        height: 'calc(100% - 55px)',
-        float: 'left',
-        marginLeft: 25,
-        marginTop: 30
-    },
-    featuredContent: {
-        width: 200,
-        height: 'calc(100% - 55px)',
-        marginRight: 25,
-        marginLeft: 25,
-        marginTop: 5,
-        float: 'right',
+let boxShadowProp = '0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.6)';
+
+let HomeStyles = theme => ({
+    container: {
+        width: '100%',
+        height: '100%',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'space-around',
+        padding: '15px 25px',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+        flexWrap: 'wrap'
+    },
+    mainContent: {
+        width: '75%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'space-between',
+        [theme.breakpoints.between(0, 841)]: {
+            width: '100%',
+            height: 'auto'
+        },
+        [theme.breakpoints.up('md')]: {
+            width: '78%'
+        },
+        [theme.breakpoints.up('lg')]: {
+            width: '85%'
+        }
     },
     news: {
         width: '100%',
-        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.6)',
-        backgroundColor: 'rgba(39, 44, 50, 0.8)',
-        height: 'calc(100% - 230px)',
+        height: '70%',
+        boxShadow: boxShadowProp,
+        backgroundColor: theme.palette.background.paper,
         overflowX: 'hidden',
         overflowY: 'scroll',
-        borderRadius: 5
-    },
-    links: {
-        height: 200,
-        width: '100%',
-        marginTop: 25,
-        display: 'flex',
-        flexWrap: 'wrap',
-        flexDirection: 'column'
-    },
-    link: {
-        width: 'calc(50% - 12.5px)',
-        height: '100%',
         borderRadius: 5,
-        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.6)',
-        display: 'flex',
-        alignItems: 'center',
-        ':hover': {
-            cursor: 'pointer'
+        padding: 10,
+        [theme.breakpoints.up('md')]: {
+            height: '60%'
         }
     },
-    featuredPack: {
+    links: {
         width: '100%',
-        height: 200,
-        borderRadius: 5,
+        height: 180,
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        marginTop: 30,
+        [theme.breakpoints.between(0, 641)]: {
+            height: 400,
+            alignItems: 'space-between'
+        }
+    },
+    link: {
+        width: 180,
+        height: 100,
+        borderRadius: 8,
+        backgroundColor: theme.palette.background.paper,
+        padding: 10,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: boxShadowProp,
+        '&:hover': {
+            cursor: 'pointer',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)'
+        }
+    },
+    featuredPacks: {
+        width: 172,
+        height: 'auto',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-end',
-        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.6)'
+        [theme.breakpoints.between(0, 841)]: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            width: '100%',
+            height: 172,
+            marginBottom: 20
+        }
     },
-    trendingTitle: {
-        width: 200,
-        fontSize: 22,
-        fontWeight: 'bold'
+    pack: {
+        backgroundSize: 'cover',
+        width: 172,
+        height: 172,
+        borderRadius: 5,
+        display: 'flex',
+        alignItems: 'flex-end'
     },
-    issuesTitle: {
-        fontSize: 50,
+    marginPack: {
+        backgroundSize: 'cover',
+        width: 172,
+        height: 172,
+        borderRadius: 5,
+        display: 'flex',
+        alignItems: 'flex-end',
+        [theme.breakpoints.up(840)]: {
+            marginTop: 40,
+            marginBottom: 40
+        }
+    },
+    installBtn: {
+        paddingTop: 12,
+        paddingBottom: 12,
+        paddingLeft: 20,
+        paddingRight: 20,
+        cursor: 'pointer',
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.primary.light,
+        border: 'none',
+        opacity: 0.9,
+        width: '100%',
+        borderRadius: 2,
+        margin: '0 auto',
         fontWeight: 'bold',
-        textShadow: '2px 2px 10px black'
+        '&:hover': {
+            opacity: 1
+        }
     }
-};
+});
 
-module.exports = HomeStyles;
+export {HomeStyles};

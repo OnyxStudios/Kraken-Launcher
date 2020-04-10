@@ -3,7 +3,7 @@ const path = require('path');
 const shell = require('electron').remote.shell;
 const StorageUtils = require('./../utils/StorageUtils');
 const instancesFolder = require('electron').remote.app.getPath('userData') + '/instances/';
-const maxLength = 182;
+//const maxLength = 182;
 
 function parseInstances() {
     let instances = [];
@@ -11,7 +11,8 @@ function parseInstances() {
     StorageUtils.getOrDefault('instances', []).forEach(instanceID => {
         let instanceConfig = instancesFolder + instanceID + '/pack.json';
         if(fs.existsSync(instanceConfig)) {
-            let instance = JSON.parse(fs.readFileSync(instanceConfig));
+            let data = fs.readFileSync(instanceConfig);
+            let instance = JSON.parse(data);
             instances.push(instanceToObj(instance));
         }
     });
@@ -65,7 +66,7 @@ function instanceToObj(instance) {
         logo: logo,
         version: instance.version,
         author: instance.author,
-        description: instance.description ? instance.description.substr(0, maxLength) : '',
+        description: instance.description ? instance.description : '',//instance.description.substr(0, maxLength) : '',
         mods: mods
     });
 }
@@ -105,22 +106,41 @@ function doesModExist(instanceID, modFile) {
     return fs.existsSync(instancesFolder + instanceID + '/mods/' + modFile);
 }
 
-function createInstance(name, desc, version, author) {
+function createInstance(name, desc, version, author, loader, mcVersion, loaderVersion) {
+    let savedInstances = StorageUtils.getOrDefault('instances', []);
+    let vanilla = ~loader.indexOf('vanilla');
     let id = Math.floor(100000 + Math.random() * 900000);
     let packData = {
         id: id.toString(),
         name,
-        logo: 'https://i.imgur.com/jCnInhv.png',
+        logo: '/assets/images/instance_placeholder.png',
         description: desc,
         version,
         author,
+        mods: {},
         launcher: {
-
+            loader,
+            minecraft: mcVersion
         }
     };
+
+    if(!vanilla) {
+        packData.launcher.version = loaderVersion;
+    }
+
+    fs.mkdirSync(instancesFolder + id);
+    if(!vanilla) {
+        fs.mkdirSync(instancesFolder + id + '/mods');
+    }
+
+    fs.writeFile(instancesFolder + id + '/pack.json', JSON.stringify(packData, null, 4), (err) => {if(err) return console.error(err)});
+    savedInstances.push(id);
+    StorageUtils.storeData('instances', savedInstances);
+
+    return packData;
 }
 
-module.exports = {
+export {
     parseInstances,
     toggleMod,
     openInstanceFolder,

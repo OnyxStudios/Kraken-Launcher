@@ -1,76 +1,83 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
-import {BrowserRouter, Switch, Route, NavLink} from 'react-router-dom';
-import {connect, Provider} from 'react-redux';
-import Store from './redux/Store';
-
-import HomeScreen from './screens/HomeScreen';
-import InstancesScreen from './screens/InstancesScreen';
-import CursePacksScreen from './screens/CursePacksScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import {setVersions} from "./redux/Actions";
-
-const NavStyles = require('./styles/NavStyles');
-const LoaderUtils = require('./utils/LoaderUtils');
+import {withStyles, MuiThemeProvider, CssBaseline, List, ListItem, ListItemIcon, ListItemText, Drawer, Typography} from "@material-ui/core";
+import {Menu, ArrowBackIos} from "@material-ui/icons";
+import clsx from "clsx";
+import {NavStyles} from './styles/NavStyles';
+import {defaultTheme} from './styles/Theme'
+import {renderNavigation} from "./utils/Navigation";
+import HomeScreen from "./screens/HomeScreen";
 
 class App extends React.Component {
 
+    state = {
+        sideNavOpen: false,
+        activeScreen: 'Home',
+        Screen: HomeScreen
+    };
+
     constructor(props) {
         super(props);
-        this.state = {
-            width: 0,
-            height: 0
-        };
+        this.navigate = this.navigate.bind(this);
     }
 
-    componentWillMount() {
-        LoaderUtils.getMinecraftVersions(LoaderUtils.minecraftVersionsURL, false).then(versions => this.props.setVersions('vanilla', versions));
-        LoaderUtils.getLoaderVersions(LoaderUtils.forgeVersionsURL).then(versions => this.props.setVersions('forge', versions));
-        LoaderUtils.getLoaderVersions(LoaderUtils.fabricMetaURL + 'loader').then(versions => this.props.setVersions('fabric', versions));
-    }
+    toggleSideNav = () => {
+        this.setState({sideNavOpen: !this.state.sideNavOpen})
+    };
 
-    componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions);
-    }
-
-    componentWillUnmount() {
-        window.addEventListener('resize', this.updateDimensions);
-    }
-
-    updateDimensions = () => {
-        this.setState({ width: window.innerWidth, height: window.innerHeight });
+    navigate = (Screen, activeScreen) => {
+        this.setState({Screen, activeScreen});
     };
 
     render() {
+        let {sideNavOpen, activeScreen, Screen} = this.state;
+        let {classes} = this.props;
+
         return (
-            <BrowserRouter>
-                <div style={NavStyles.sideNav}>
-                    <center>
-                        <img style={NavStyles.logo} src='/assets/images/logo.png' alt='' />
-                        <hr style={NavStyles.divider} />
+            <MuiThemeProvider theme={defaultTheme.navTheme}>
+                <CssBaseline />
+                <Drawer
+                    variant='permanent'
+                    className={
+                        clsx(classes.sideNav, {
+                            [classes.sideNavOpen]: sideNavOpen,
+                            [classes.sideNavClose]: !sideNavOpen
+                        })
+                    }
+                    classes={{
+                        paper: clsx({
+                            [classes.sideNavOpen]: sideNavOpen,
+                            [classes.sideNavClose]: !sideNavOpen
+                        })
+                    }}
+                >
+                    <List>
+                        <ListItem button onClick={this.toggleSideNav}>
+                            <ListItemIcon><Typography color='textSecondary'>{sideNavOpen ? <ArrowBackIos /> : <Menu />}</Typography></ListItemIcon>
+                            <ListItemText><Typography color='textSecondary'>Close</Typography></ListItemText>
+                        </ListItem>
 
-                        <span style={NavStyles.noPaddingLink}><NavLink activeStyle={NavStyles.active} style={NavStyles.icon} exact to='/'><i className='material-icons'>home</i></NavLink></span>
-                        <span style={NavStyles.link}><NavLink activeStyle={NavStyles.active} style={NavStyles.icon} to='/instances'><i className='material-icons'>create_new_folder</i></NavLink></span>
-                        <span style={NavStyles.link}><NavLink activeStyle={NavStyles.active} style={NavStyles.icon} to='/cursepacks'><i className='material-icons'>view_list</i></NavLink></span>
-                        <span style={NavStyles.bottomLink}><NavLink activeStyle={NavStyles.active} style={NavStyles.icon} to='/settings'><i className='material-icons'>settings</i></NavLink></span>
-                    </center>
+                        {renderNavigation(this.navigate, activeScreen)}
+
+                        <ListItem>
+                            <ListItemIcon><img className={classes.logo} src='/assets/images/logo.png' alt='' /></ListItemIcon>
+                            <ListItemText><Typography style={{fontWeight: 'bold'}}>Kraken Launcher</Typography></ListItemText>
+                        </ListItem>
+                    </List>
+                </Drawer>
+
+                <div className={clsx(classes.content, {[classes.contentShift]: sideNavOpen})}>
+                    {Screen != null ? <Screen /> : 'Undefined Screen Error'}
                 </div>
-
-                <Switch>
-                    <Route path='/' exact component={HomeScreen}/>
-                    <Route path='/instances' component={InstancesScreen}/>
-                    <Route path='/cursepacks' component={CursePacksScreen}/>
-                    <Route path='/settings' component={SettingsScreen}/>
-                </Switch>
-            </BrowserRouter>
+            </MuiThemeProvider>
         );
     }
 }
 
-const mapStateToProps = state => {
-    return {loaders: state.loaders};
-};
+//const mapStateToProps = state => {
+//    return {loaders: state.loaders};
+//};
 
-App = connect(mapStateToProps, {setVersions})(Radium(App));
-ReactDOM.render(<Provider store={Store}><App /></Provider>, document.getElementById('root'));
+//App = connect(mapStateToProps, {setVersions})(Radium(App));
+App = withStyles(NavStyles)(App);
+ReactDOM.render(<App />, document.getElementById('root'));
