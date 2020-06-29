@@ -16,6 +16,9 @@ let defaultTheme = {
             error: {
                 main: 'rgba(233, 30, 99, 1)'
             },
+            success: {
+                main: 'rgba(0, 230, 118, 1)'
+            },
             background: {
                 paper: 'rgba(39, 44, 50, 0.8)',
                 default: 'rgba(55, 62, 72, 1)'

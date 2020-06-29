@@ -5,7 +5,7 @@ const StorageUtils = require('./../utils/StorageUtils');
 const instancesFolder = require('electron').remote.app.getPath('userData') + '/instances/';
 //const maxLength = 182;
 
-function parseInstances() {
+function loadModpacks() {
     let instances = [];
 
     StorageUtils.getOrDefault('instances', []).forEach(instanceID => {
@@ -67,6 +67,7 @@ function instanceToObj(instance) {
         version: instance.version,
         author: instance.author,
         description: instance.description ? instance.description : '',//instance.description.substr(0, maxLength) : '',
+        launcher: instance.launcher,
         mods: mods
     });
 }
@@ -141,7 +142,7 @@ function createInstance(name, desc, version, author, loader, mcVersion, loaderVe
 }
 
 export {
-    parseInstances,
+    loadModpacks,
     toggleMod,
     openInstanceFolder,
     deleteInstance,

@@ -11,7 +11,4 @@ function sortVersions(arr) {
     return arr.sort((a, b) => b.localeCompare(a, undefined, {numeric: true}));
 }
 
-module.exports = {
-    getNews,
-    sortVersions
-};
+export {getNews, sortVersions};

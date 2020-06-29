@@ -5,5 +5,5 @@
 *.ipr
 *.iws
 node_modules/*
-!node_modules/react-scripts/
+!node_modules/react-scripts/config/webpack.config.js
 release-builds/

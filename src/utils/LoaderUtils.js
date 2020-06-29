@@ -57,7 +57,7 @@ function getLoaderVersions(loaderURL) {
     });
 }
 
-module.exports = {
+export {
     minecraftVersionsURL,
     fabricMetaURL,
     forgeVersionsURL,

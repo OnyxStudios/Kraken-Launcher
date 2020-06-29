@@ -66,6 +66,7 @@ let HomeStyles = theme => ({
         alignItems: 'center',
         justifyContent: 'center',
         boxShadow: boxShadowProp,
+        animation: 'growItems 1s',
         '&:hover': {
             cursor: 'pointer',
             backgroundColor: 'rgba(0, 0, 0, 0.4)'
@@ -91,7 +92,8 @@ let HomeStyles = theme => ({
         height: 172,
         borderRadius: 5,
         display: 'flex',
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
+        animation: 'growItems 1s'
     },
     marginPack: {
         backgroundSize: 'cover',
@@ -100,6 +102,7 @@ let HomeStyles = theme => ({
         borderRadius: 5,
         display: 'flex',
         alignItems: 'flex-end',
+        animation: 'growItems 1s',
         [theme.breakpoints.up(840)]: {
             marginTop: 40,
             marginBottom: 40

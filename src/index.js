@@ -6,7 +6,20 @@ import clsx from "clsx";
 import {NavStyles} from './styles/NavStyles';
 import {defaultTheme} from './styles/Theme'
 import {renderNavigation} from "./utils/Navigation";
+import {connect, Provider} from 'react-redux';
+import Store from "./redux/Store";
+import {setVersions} from "./redux/Actions";
 import HomeScreen from "./screens/HomeScreen";
+import {loadModpacks} from "./utils/ModpackUtils";
+import {addPack} from './redux/Actions';
+
+import {
+    fabricMetaURL,
+    forgeVersionsURL,
+    getLoaderVersions,
+    getMinecraftVersions,
+    minecraftVersionsURL
+} from "./utils/LoaderUtils";
 
 class App extends React.Component {
 
@@ -19,6 +32,14 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.navigate = this.navigate.bind(this);
+    }
+
+    componentDidMount() {
+        loadModpacks().forEach(instance => this.props.addPack(instance));
+
+        getMinecraftVersions(minecraftVersionsURL, false).then(versions => this.props.setVersions('vanilla', versions));
+        getLoaderVersions(forgeVersionsURL).then(versions => this.props.setVersions('forge', versions));
+        getLoaderVersions(fabricMetaURL + 'loader').then(versions => this.props.setVersions('fabric', versions));
     }
 
     toggleSideNav = () => {
@@ -74,10 +95,10 @@ class App extends React.Component {
     }
 }
 
-//const mapStateToProps = state => {
-//    return {loaders: state.loaders};
-//};
+const mapStateToProps = state => {
+    return {loaders: state.loaders, instances: state.modpacks};
+};
 
-//App = connect(mapStateToProps, {setVersions})(Radium(App));
+App = connect(mapStateToProps, {setVersions, addPack})(App);
 App = withStyles(NavStyles)(App);
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<Provider store={Store}><App /></Provider>, document.getElementById('root'));
